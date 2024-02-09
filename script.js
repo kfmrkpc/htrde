@@ -66,31 +66,25 @@ const generateWord = () => {
   userInpSection.innerHTML += `<div id='chanceCount'>Chances Left: ${lossCount}</div>`;
 };
 
-//Function to check if letter exists in word and reveal it
-const revealLetter = (letter) => {
-  const charArray = randomWord.toUpperCase().split("");
-  const inputSpaces = document.getElementsByClassName("inputSpace");
+//Function to check if word is guessed correctly
+const checkWord = () => {
+  const userInput = userInpSection.innerText.replace(/\s/g, "").toUpperCase();
+  if (userInput === randomWord.toUpperCase()) {
+    resultText.innerHTML = "You Won";
+    startBtn.innerText = "Restart";
+    blocker();
+  } else {
+    lossCount--;
+    document.getElementById("chanceCount").innerText = `Chances Left: ${lossCount}`;
+    message.innerText = `Incorrect Guess`;
+    message.style.color = "#ff0000";
 
-  let letterRevealed = false;
-
-  for (let i = 0; i < charArray.length; i++) {
-    if (charArray[i] === letter && inputSpaces[i].innerText === "_ ") {
-      inputSpaces[i].innerText = charArray[i];
-      winCount++;
-
-      letterRevealed = true;
-
-      if (winCount === charArray.length) {
-        resultText.innerHTML = "You Won";
-        startBtn.innerText = "Restart";
-        blocker();
-      }
-
-      break; // Stop after revealing the first occurrence of the letter
+    if (lossCount == 0) {
+      word.innerHTML = `The word was: <span>${randomWord}</span>`;
+      resultText.innerHTML = "Game Over";
+      blocker();
     }
   }
-
-  return letterRevealed;
 };
 
 //Initial Function
@@ -117,31 +111,22 @@ const init = () => {
     //Character button onclick
     button.addEventListener("click", () => {
       const clickedLetter = button.innerText;
-
-      if (revealLetter(clickedLetter)) {
-        message.innerText = `Correct Letter`;
-        message.style.color = "#008000";
-      } else {
-        button.classList.add("incorrect");
-        lossCount--;
-        document.getElementById("chanceCount").innerText = `Chances Left: ${lossCount}`;
-        message.innerText = `Incorrect Letter`;
-        message.style.color = "#ff0000";
-
-        if (lossCount == 0) {
-          word.innerHTML = `The word was: <span>${randomWord}</span>`;
-          resultText.innerHTML = "Game Over";
-          blocker();
-        }
-      }
-
       button.disabled = true; //Disable clicked button
+      button.classList.add("clicked");
+
+      message.innerText = `Selected Letter: ${clickedLetter}`;
+      message.style.color = "#000";
     });
 
     //Append generated buttons to the letters container
     letterContainer.appendChild(button);
   }
 };
+
+//Check Word Button onclick
+checkWordBtn.addEventListener("click", () => {
+  checkWord();
+});
 
 window.onload = () => {
   init();
