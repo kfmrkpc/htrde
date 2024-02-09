@@ -138,6 +138,16 @@ const init = () => {
   }
 };
 
-window.onload = () => {
-  init();
-};
+// Yeni klavye girişini eklemek için JavaScript kodu
+// Kullanıcıdan klavye girişi almak için bir değişken oluşturuyoruz
+const userInput = document.getElementById("user-input-section");
+
+// Tüm butonları seçiyoruz
+const letterButtons = document.querySelectorAll(".letters");
+
+// Butonlara tıklama olayını kaldırıyoruz
+letterButtons.forEach(button => {
+  button.removeEventListener("click", handleClick);
+});
+
+// Kullanıcının klavyesinden giriş yapmasını sağlaya
