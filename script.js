@@ -78,76 +78,64 @@ const init = () => {
   letterContainer.classList.add("hide");
   letterContainer.innerHTML = "";
   generateWord();
-
-  //For creating letter buttons
-  for (let i = 65; i < 91; i++) {
-    let button = document.createElement("button");
-    button.classList.add("letters");
-
-    //Number to ASCII[A-Z]
-    button.innerText = String.fromCharCode(i);
-
-    //Character button onclick
-    button.addEventListener("click", () => {
-      message.innerText = `Correct Letter`;
-      message.style.color = "#008000";
-      let charArray = randomWord.toUpperCase().split("");
-      let inputSpace = document.getElementsByClassName("inputSpace");
-
-      //If array contains clicked value replace the matched Dash with Letter
-      if (charArray.includes(button.innerText)) {
-        charArray.forEach((char, index) => {
-          //If character in array is same as clicked button
-          if (char === button.innerText) {
-            button.classList.add("correct");
-            //Replace dash with letter
-            inputSpace[index].innerText = char;
-            //increment counter
-            winCount += 1;
-            //If winCount equals word length
-            if (winCount == charArray.length) {
-              resultText.innerHTML = "You Won";
-              startBtn.innerText = "Restart";
-              //block all buttons
-              blocker();
-            }
-          }
-        });
-      } else {
-        //lose count
-        button.classList.add("incorrect");
-        lossCount -= 1;
-        document.getElementById(
-          "chanceCount"
-        ).innerText = `Chances Left: ${lossCount}`;
-        message.innerText = `Incorrect Letter`;
-        message.style.color = "#ff0000";
-        if (lossCount == 0) {
-          word.innerHTML = `The word was: <span>${randomWord}</span>`;
-          resultText.innerHTML = "Game Over";
-          blocker();
-        }
-      }
-
-      //Disable clicked buttons
-      button.disabled = true;
-    });
-
-    //Append generated buttons to the letters container
-    letterContainer.appendChild(button);
-  }
 };
 
 // Yeni klavye girişini eklemek için JavaScript kodu
 // Kullanıcıdan klavye girişi almak için bir değişken oluşturuyoruz
 const userInput = document.getElementById("user-input-section");
 
-// Tüm butonları seçiyoruz
-const letterButtons = document.querySelectorAll(".letters");
-
-// Butonlara tıklama olayını kaldırıyoruz
-letterButtons.forEach(button => {
-  button.removeEventListener("click", handleClick);
+// Kullanıcının klavyesinden giriş yapmasını sağlayacak bir fonksiyon oluşturuyoruz
+document.addEventListener("keydown", event => {
+  // Sadece harf tuşlarına basıldığında işlem yapılmasını sağlıyoruz
+  const key = event.key.toUpperCase();
+  if (/^[A-Z]$/.test(key)) {
+    // Klavyeden girilen harfi ekrana yazdırıyoruz
+    userInput.innerHTML += `<span class="inputSpace">${key}</span>`;
+    // Klavyeden girilen harfi kontrol et ve işlem yap
+    checkLetter(key);
+  }
 });
 
-// Kullanıcının klavyesinden giriş yapmasını sağlaya
+// Klavyeden girilen harfi kontrol eden fonksiyon
+const checkLetter = (key) => {
+  message.innerText = `Correct Letter`;
+  message.style.color = "#008000";
+  let charArray = randomWord.toUpperCase().split("");
+  let inputSpace = document.getElementsByClassName("inputSpace");
+
+  // Eğer array tıklanan değeri içeriyorsa, eşleşen tireyi harfle değiştir
+  if (charArray.includes(key)) {
+    charArray.forEach((char, index) => {
+      // Eğer array'deki karakter tıklanan düğmeyle aynıysa
+      if (char === key) {
+        // Düğmeyi doğru olarak işaretle
+        inputSpace[index].innerText = char;
+        // Doğru harfi ekleme sayacını artır
+        winCount += 1;
+        // Eğer kazanma sayısı kelime uzunluğuna eşitse
+        if (winCount == charArray.length) {
+          resultText.innerHTML = "You Won";
+          startBtn.innerText = "Restart";
+          // Tüm düğmeleri engelle
+          blocker();
+        }
+      }
+    });
+  } else {
+    // Kaybetme sayısını azalt
+    lossCount -= 1;
+    document.getElementById("chanceCount").innerText = `Chances Left: ${lossCount}`;
+    message.innerText = `Incorrect Letter`;
+    message.style.color = "#ff0000";
+    if (lossCount == 0) {
+      word.innerHTML = `The word was: <span>${randomWord}</span>`;
+      resultText.innerHTML = "Game Over";
+      blocker();
+    }
+  }
+};
+
+// Sayfa yüklendiğinde oyunu başlat
+window.onload = () => {
+  init();
+};
