@@ -71,25 +71,26 @@ const revealLetter = (letter) => {
   const charArray = randomWord.toUpperCase().split("");
   const inputSpaces = document.getElementsByClassName("inputSpace");
 
+  let letterRevealed = false;
+
   for (let i = 0; i < charArray.length; i++) {
-    if (charArray[i] === letter) {
-      // If the letter is found in the word and hasn't been revealed yet
-      if (inputSpaces[i].innerText === "_ ") {
-        inputSpaces[i].innerText = charArray[i];
-        winCount++;
+    if (charArray[i] === letter && inputSpaces[i].innerText === "_ ") {
+      inputSpaces[i].innerText = charArray[i];
+      winCount++;
 
-        if (winCount === charArray.length) {
-          resultText.innerHTML = "You Won";
-          startBtn.innerText = "Restart";
-          blocker();
-        }
+      letterRevealed = true;
 
-        return true; // Letter found and revealed
+      if (winCount === charArray.length) {
+        resultText.innerHTML = "You Won";
+        startBtn.innerText = "Restart";
+        blocker();
       }
+
+      break; // Stop after revealing the first occurrence of the letter
     }
   }
 
-  return false; // Letter not found or already revealed
+  return letterRevealed;
 };
 
 //Initial Function
