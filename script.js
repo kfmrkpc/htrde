@@ -66,6 +66,32 @@ const generateWord = () => {
   userInpSection.innerHTML += `<div id='chanceCount'>Chances Left: ${lossCount}</div>`;
 };
 
+//Function to check if letter exists in word and reveal it
+const revealLetter = (letter) => {
+  const charArray = randomWord.toUpperCase().split("");
+  const inputSpaces = document.getElementsByClassName("inputSpace");
+
+  for (let i = 0; i < charArray.length; i++) {
+    if (charArray[i] === letter) {
+      // If the letter is found in the word and hasn't been revealed yet
+      if (inputSpaces[i].innerText === "_ ") {
+        inputSpaces[i].innerText = charArray[i];
+        winCount++;
+
+        if (winCount === charArray.length) {
+          resultText.innerHTML = "You Won";
+          startBtn.innerText = "Restart";
+          blocker();
+        }
+
+        return true; // Letter found and revealed
+      }
+    }
+  }
+
+  return false; // Letter not found or already revealed
+};
+
 //Initial Function
 const init = () => {
   winCount = 0;
@@ -78,64 +104,44 @@ const init = () => {
   letterContainer.classList.add("hide");
   letterContainer.innerHTML = "";
   generateWord();
-};
 
-// Yeni klavye girişini eklemek için JavaScript kodu
-// Kullanıcıdan klavye girişi almak için bir değişken oluşturuyoruz
-const userInput = document.getElementById("user-input-section");
+  //For creating letter buttons
+  for (let i = 65; i < 91; i++) {
+    let button = document.createElement("button");
+    button.classList.add("letters");
 
-// Kullanıcının klavyesinden giriş yapmasını sağlayacak bir fonksiyon oluşturuyoruz
-document.addEventListener("keydown", event => {
-  // Sadece harf tuşlarına basıldığında işlem yapılmasını sağlıyoruz
-  const key = event.key.toUpperCase();
-  if (/^[A-Z]$/.test(key)) {
-    // Klavyeden girilen harfi ekrana yazdırıyoruz
-    userInput.innerHTML += `<span class="inputSpace">${key}</span>`;
-    // Klavyeden girilen harfi kontrol et ve işlem yap
-    checkLetter(key);
-  }
-});
+    //Number to ASCII[A-Z]
+    button.innerText = String.fromCharCode(i);
 
-// Klavyeden girilen harfi kontrol eden fonksiyon
-const checkLetter = (key) => {
-  message.innerText = `Correct Letter`;
-  message.style.color = "#008000";
-  let charArray = randomWord.toUpperCase().split("");
-  let inputSpace = document.getElementsByClassName("inputSpace");
+    //Character button onclick
+    button.addEventListener("click", () => {
+      const clickedLetter = button.innerText;
 
-  // Eğer array tıklanan değeri içeriyorsa, eşleşen tireyi harfle değiştir
-  if (charArray.includes(key)) {
-    charArray.forEach((char, index) => {
-      // Eğer array'deki karakter tıklanan düğmeyle aynıysa
-      if (char === key) {
-        // Düğmeyi doğru olarak işaretle
-        inputSpace[index].innerText = char;
-        // Doğru harfi ekleme sayacını artır
-        winCount += 1;
-        // Eğer kazanma sayısı kelime uzunluğuna eşitse
-        if (winCount == charArray.length) {
-          resultText.innerHTML = "You Won";
-          startBtn.innerText = "Restart";
-          // Tüm düğmeleri engelle
+      if (revealLetter(clickedLetter)) {
+        message.innerText = `Correct Letter`;
+        message.style.color = "#008000";
+      } else {
+        button.classList.add("incorrect");
+        lossCount--;
+        document.getElementById("chanceCount").innerText = `Chances Left: ${lossCount}`;
+        message.innerText = `Incorrect Letter`;
+        message.style.color = "#ff0000";
+
+        if (lossCount == 0) {
+          word.innerHTML = `The word was: <span>${randomWord}</span>`;
+          resultText.innerHTML = "Game Over";
           blocker();
         }
       }
+
+      button.disabled = true; //Disable clicked button
     });
-  } else {
-    // Kaybetme sayısını azalt
-    lossCount -= 1;
-    document.getElementById("chanceCount").innerText = `Chances Left: ${lossCount}`;
-    message.innerText = `Incorrect Letter`;
-    message.style.color = "#ff0000";
-    if (lossCount == 0) {
-      word.innerHTML = `The word was: <span>${randomWord}</span>`;
-      resultText.innerHTML = "Game Over";
-      blocker();
-    }
+
+    //Append generated buttons to the letters container
+    letterContainer.appendChild(button);
   }
 };
 
-// Sayfa yüklendiğinde oyunu başlat
 window.onload = () => {
   init();
 };
