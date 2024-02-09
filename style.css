@@ -4,9 +4,11 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
 body {
   background-color: #7786f5;
 }
+
 .wrapper {
   position: absolute;
   width: 90%;
@@ -20,6 +22,7 @@ body {
   text-align: center;
   border-radius: 1em;
 }
+
 .controls-container {
   background-color: #7786f5;
   position: absolute;
@@ -31,7 +34,9 @@ body {
   flex-direction: column;
   top: 0;
 }
-#start {
+
+#start,
+#checkWordBtn {
   font-size: 1.2em;
   padding: 1em 3em;
   background-color: #ffffff;
@@ -39,7 +44,9 @@ body {
   outline: none;
   border-radius: 2em;
   cursor: pointer;
+  margin-top: 1em;
 }
+
 #letter-container {
   display: flex;
   flex-wrap: wrap;
@@ -47,6 +54,7 @@ body {
   justify-content: center;
   margin-top: 2em;
 }
+
 #letter-container button {
   background-color: #ffffff;
   border: 2px solid #7786f5;
@@ -57,36 +65,36 @@ body {
   height: 3em;
   width: 3em;
 }
-#letter-container .correct {
-  background-color: #008000;
-  color: #ffffff;
-  border: 2px solid #008000;
+
+#letter-container .clicked {
+  background-color: #d3d3d3;
 }
-#letter-container .incorrect {
-  background-color: #8a8686;
-  color: #ffffff;
-  border: 2px solid #8a8686;
-}
+
 .hint-ref {
   margin-bottom: 1em;
 }
+
 .hint-ref span {
   font-weight: 600;
 }
+
 #chanceCount {
   margin: 1em 0;
   position: absolute;
   top: 0.62em;
   right: 2em;
 }
+
 #word {
   font-weight: 600;
   margin: 1em 0 2em 0;
 }
+
 #word span {
   text-transform: uppercase;
   font-weight: 400;
 }
+
 .hide {
   display: none;
 }
